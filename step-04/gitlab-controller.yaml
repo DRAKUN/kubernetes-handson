@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: gitlab-controller
+spec:
+  replicas: 1
+  selector:
+    type: gitlab
+  template:
+    metadata:
+      name: gitlab
+      labels:
+        type: gitlab
+    spec:
+      containers:
+        - name: gitlab-postgresql
+          image: sameersbn/postgresql:9.4-8
+          env:
+            - name: DB_NAME
+              value: gitlabhq_production
+            - name: DB_USER
+              value: gitlab
+            - name: DB_PASS
+              value: password
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              name: pg-data
+        - name: gitlab-redis
+          image: sameersbn/redis:latest
+          volumeMounts:
+            - mountPath: /var/lib/redis
+              name: redis-data
+        - name: gitlab
+          image: sameersbn/gitlab:8.1.4
+          env:
+            - name: GITLAB_PORT
+              value: "10080"
+            - name: GITLAB_SSH_PORT
+              value: "10022"
+            - name: GITLAB_SECRETS_DB_KEY_BASE
+              value: "FNxRbFFtvcmVvSdhSFg63GFxLNTb227p4WphT5DMpCSMFWJrxKGgkMvsWjs9dh2X"
+          ports:
+            - containerPort: 22
+            - containerPort: 80
+      volumes:
+        - name: pg-data
+          hostPath:
+            path: "/tmp/pg"
+        - name: redis-data
+          hostPath:
+            path: "/tmp/redis"
