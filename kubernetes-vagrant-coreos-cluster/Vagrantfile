@@ -34,7 +34,8 @@ end
 required_plugins = %w(vagrant-triggers)
 
 # check either 'http_proxy' or 'HTTP_PROXY' environment variable
-enable_proxy = !(ENV['HTTP_PROXY'] || ENV['http_proxy'] || '').empty?
+#enable_proxy = !(ENV['HTTP_PROXY'] || ENV['http_proxy'] || '').empty?
+enable_proxy = false
 if enable_proxy
   required_plugins.push('vagrant-proxyconf')
 end

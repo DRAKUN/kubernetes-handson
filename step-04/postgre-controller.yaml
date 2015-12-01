@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: postgresql-controller
+spec:
+  replicas: 1
+  selector:
+    type: postgresql
+  template:
+    metadata:
+      name: postgresql
+      labels:
+        type: postgresql
+    spec:
+      containers:
+        - name: postgresql
+          image: sameersbn/postgresql:9.4-8
+          env:
+            - name: DB_NAME
+              value: gitlabhq_production
+            - name: DB_USER
+              value: gitlab
+            - name: DB_PASS
+              value: password
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql
+              name: pg-data
+      volumes:
+        - name: pg-data
+          hostPath:
+            path: "/tmp/pg"
