@@ -1,5 +1,5 @@
 #!/bin/bash
-proxy=http://10.0.0.18:3128
+proxy=http://10.2.0.4:3128
 export http_proxy=$proxy
 export https_proxy=$proxy
 export HTTP_PROXY=$proxy
